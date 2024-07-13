@@ -38,7 +38,7 @@ const main = async () => {
     logseq.App.registerUIItem("toolbar", {
       key: `logseq-bookmark${i + 1}-plugin`,
       template: `
-<a data-on-click="goToBookmark${i + 1}" class="button" style="margin: 5px; font-size: 12px; border: 1px solid black; padding: 1px 10px; cursor: pointer !important;">
+<a data-on-click="goToBookmark${i + 1}" class="button" style="margin:0 5px;max-height:30px;font-size: 10px;border: 1px solid black;cursor: pointer !important;">
     ${logseq.settings![`bookmark-${i + 1}`]}
 </a>`,
     });
