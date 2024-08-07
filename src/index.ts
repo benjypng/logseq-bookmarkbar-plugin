@@ -33,16 +33,18 @@ const main = async () => {
     })
 
     setTimeout(() => {
-      parent.document
-        .getElementById(`${logseq.settings![`bookmark-${i + 1}`]}`)!
-        .addEventListener('contextmenu', async () => {
-          const page = await logseq.Editor.getPage(
-            `${logseq.settings![`bookmark-${i + 1}`]}`,
-          )
-          if (!page) return
-          logseq.Editor.openInRightSidebar(page.uuid)
-        })
-    }, 100)
+      const el = parent.document.getElementById(
+        `${logseq.settings![`bookmark-${i + 1}`]}`,
+      )!
+      if (!el) return
+      el.addEventListener('contextmenu', async () => {
+        const page = await logseq.Editor.getPage(
+          `${logseq.settings![`bookmark-${i + 1}`]}`,
+        )
+        if (!page) return
+        logseq.Editor.openInRightSidebar(page.uuid)
+      })
+    }, 200)
   }
 }
 
