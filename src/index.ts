@@ -5,9 +5,7 @@ import { settings } from './settings'
 const main = async () => {
   console.log('logseq-boomarkbar-plugin loaded')
 
-  const noOfBookmarks = logseq.settings!.noOfBookmarks as number
-
-  for (let i = 0; i < noOfBookmarks; i++) {
+  for (let i = 0; i < 4; i++) {
     settings.push({
       key: `bookmark-${i + 1}`,
       type: 'string',
@@ -17,7 +15,7 @@ const main = async () => {
     })
   }
 
-  for (let i = 0; i < noOfBookmarks; i++) {
+  for (let i = 0; i < 4; i++) {
     logseq.provideModel({
       [`goToBookmark${i + 1}`]: () => {
         logseq.App.pushState('page', {
