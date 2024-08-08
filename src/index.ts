@@ -2,17 +2,26 @@ import '@logseq/libs'
 
 import { SettingSchemaDesc } from '@logseq/libs/dist/LSPlugin.user'
 
-import css from './index.css?raw'
+import { getNumberofLinkedReferences } from './get-linked-ref-number'
 import { handleSettings } from './handle-settings'
+import css from './index.css?raw'
 
 const settings: SettingSchemaDesc[] = [
   {
     key: 'noOfBookmarks',
     title: 'Number of Bookmarks',
-    type: 'number',
     description:
       'Restart Logseq when changing this setting, even during the first time.',
+    type: 'number',
     default: 1,
+  },
+  {
+    key: 'indicateUnread',
+    title: 'Indicate Unread',
+    description:
+      'If checked, there will be an indication if the page has at least 1 linked reference.',
+    type: 'boolean',
+    default: true,
   },
 ]
 
@@ -32,37 +41,29 @@ const main = async () => {
   handleSettings(settings)
   logseq.provideStyle(css)
 
+  const renderToolbar = async (pageName: string, i: number) => {
+    logseq.App.registerUIItem('toolbar', {
+      key: pageName,
+      template: `
+<a id="${pageName}" data-on-click="goToBookmark${i + 1}" class="button bookmark-btn">
+    ${pageName}${await getNumberofLinkedReferences(pageName)}
+</a>`,
+    })
+  }
+
   for (let i = 0; i < 4; i++) {
+    const pageName = logseq.settings![`bookmark-${i + 1}`] as string
+
     logseq.provideModel({
       [`goToBookmark${i + 1}`]: () => {
+        renderToolbar(pageName, i)
         logseq.App.pushState('page', {
-          name: logseq.settings![`bookmark-${i + 1}`],
+          name: pageName,
         })
       },
     })
 
-    logseq.App.registerUIItem('toolbar', {
-      key: `logseq-bookmark${i + 1}-plugin`,
-      template: `
-<a id="${logseq.settings![`bookmark-${i + 1}`]}" data-on-click="goToBookmark${i + 1}" class="button bookmark-btn">
-    ${logseq.settings![`bookmark-${i + 1}`]}
-  <span class="bookmark-indicator">3</span>
-</a>`,
-    })
-
-    setTimeout(() => {
-      const el = parent.document.getElementById(
-        `${logseq.settings![`bookmark-${i + 1}`]}`,
-      )!
-      if (!el) return
-      el.addEventListener('contextmenu', async () => {
-        const page = await logseq.Editor.getPage(
-          `${logseq.settings![`bookmark-${i + 1}`]}`,
-        )
-        if (!page) return
-        logseq.Editor.openInRightSidebar(page.uuid)
-      })
-    }, 200)
+    renderToolbar(pageName, i)
   }
 }
 

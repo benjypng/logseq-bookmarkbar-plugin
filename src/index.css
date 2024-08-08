@@ -7,11 +7,3 @@
   display: flex;
   gap: 0.2rem;
 }
-
-.bookmark-indicator {
-  background-color: #777;
-  color: #fff;
-  font-size: 0.8rem;
-  padding: 0.1rem 0.2rem;
-  border-radius: 50%;
-}
