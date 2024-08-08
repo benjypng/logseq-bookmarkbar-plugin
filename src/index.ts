@@ -1,19 +1,26 @@
 import '@logseq/libs'
 
+import css from './index.css?raw'
 import { settings } from './settings'
+
+let noOfBookmarks
+console.log(noOfBookmarks)
+
+for (let i = 0; i < noOfBookmarks; i++) {
+  settings.push({
+    key: `bookmark-${i + 1}`,
+    type: 'string',
+    description: 'Enter page name.',
+    default: '',
+    title: `Bookmark ${i + 1}`,
+  })
+}
 
 const main = async () => {
   console.log('logseq-boomarkbar-plugin loaded')
-
-  for (let i = 0; i < 4; i++) {
-    settings.push({
-      key: `bookmark-${i + 1}`,
-      type: 'string',
-      description: 'Enter page name.',
-      default: '',
-      title: `Bookmark ${i + 1}`,
-    })
-  }
+  logseq.provideStyle(css)
+  noOfBookmarks = logseq.settings!.noOfBookmarks
+  console.log(logseq.settings)
 
   for (let i = 0; i < 4; i++) {
     logseq.provideModel({
@@ -27,8 +34,9 @@ const main = async () => {
     logseq.App.registerUIItem('toolbar', {
       key: `logseq-bookmark${i + 1}-plugin`,
       template: `
-<a id="${logseq.settings![`bookmark-${i + 1}`]}" data-on-click="goToBookmark${i + 1}" class="button" style="margin:0 5px;max-height:30px;font-size: 10px;border: 1px solid black;cursor: pointer !important;">
+<a id="${logseq.settings![`bookmark-${i + 1}`]}" data-on-click="goToBookmark${i + 1}" class="button bookmark-btn">
     ${logseq.settings![`bookmark-${i + 1}`]}
+  <span class="bookmark-indicator">3</span>
 </a>`,
     })
 
